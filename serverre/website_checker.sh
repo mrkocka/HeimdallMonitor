@@ -17,7 +17,7 @@ check_website() {
   local id=$1
   local url=$(redis-cli hget $id "url")
   local email=$(redis-cli hget $id "email")
-  local current_status=$(redis-cli hget $id "allapot")
+  local current_status=$(redis-cli hget $id "status")
 
   # Küldünk egy HTTP kérést és lekérjük az állapotkódot
   local status_code=$(curl -o /dev/null -s -w "%{http_code}\n" $url)
@@ -26,11 +26,13 @@ check_website() {
   local new_status="offline"
   if [ "$status_code" -eq 200 ]; then
     new_status="online"
+    #Ki kell ezt majd törölni
+    echo "$url elérhető!"
   fi
 
   # Ha az állapot megváltozott, frissítsük a Redis-ben és küldjünk értesítést
   if [ "$new_status" != "$current_status" ]; then
-    redis-cli hset $id "allapot" "$new_status"
+    redis-cli hset $id "status" "$new_status"
     log_message "A(z) $url állapota megváltozott: $current_status → $new_status"
 
     # Ha offline lett, küldjünk emailt
