@@ -1,1 +1,1 @@
-jegyzetek.txt
+HSET webpage:1 logo "/img/logo1.jpg" nev "Cégem Kft." url "https://cegem.hu" email "info@cegem.hu" allapot "online"
